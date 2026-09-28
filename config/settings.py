@@ -1,3 +1,4 @@
+
 """
 Django settings for config project.
 """
@@ -5,6 +6,7 @@ Django settings for config project.
 from pathlib import Path
 import os
 
+# Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -13,17 +15,28 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
+# Allowed hosts
 ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+]
+
+# Render automatically provides this hostname
+render_host = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+if render_host:
+    ALLOWED_HOSTS.append(render_host)
+
+# Also allow hosts specified in environment variables
+extra_hosts = os.environ.get("ALLOWED_HOSTS", "")
+ALLOWED_HOSTS += [
     host.strip()
-    for host in os.environ.get(
-        "ALLOWED_HOSTS",
-        "aradhya-sharma-portfolio.onrender.com,localhost,127.0.0.1"
-    ).split(",")
+    for host in extra_hosts.split(",")
     if host.strip()
 ]
 
+# CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
-    "https://aradhya-sharma-portfolio.onrender.com"
+    "https://aradhya-sharma-portfolio.onrender.com",
 ]
 
 
